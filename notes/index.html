@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ang="en" class="tui-bg-blue-black tui-cursor">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com/ https://www.google.com/ https://cdnjs.cloudflare.com/ajax/libs/dompurify/; frame-src https://www.google.com/ https://recaptcha.google.com/; style-src 'self' 'unsafe-inline';">
+  <title>XSS POC</title>
+  <script async src="https://www.google.com/recaptcha/api.js"></script>  
+  <script src=https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.6/purify.min.js></script>
+  <link rel="stylesheet" href="dist/tuicss.min.css">
+  <!-- The style is powered by https://github.com/vinibiavatti1/TuiCss -->
+  <style>
+    .tui-input {
+      width: 430px;
+    }
+    a {
+      color: #d9ff1c;
+    }
+  </style>
+</head>
+
+<body class="center" style="padding: 50px">
+  <div class="tui-window" style="text-align: left">
+    <div style="padding: 16px;">
+      <h1>XSS challenge</h1>
+      <p>Delivered by <a href="https://twitter.com/aszx87410" target="_blank">@aszx87410</a></p>
+      <h2>Rules</h2>
+      <p>The solution:</p>
+      <ol>
+        <li>Should work on the latest version of Chrome and FireFox.</li>
+        <li>Should execute alert(document.domain).</li>
+        <li>Should require no user interaction.</li>
+        <li>Should be submitted in a private message to <a href="https://twitter.com/aszx87410" target="_blank">@aszx87410</a></li>
+      </ol>
+      <h2>Hall of Fame</h2>
+      <ul>
+        <li>🏅 - you?</li>
+      </ul>
+    </div>
+    <form>
+      <fieldset class="tui-fieldset">
+        <legend class="center title">Create Your Note</legend>
+        Creator....: <input name="creator" class="tui-input" placeholder="your name" /><br>
+        <div class="input-type">Type.......: <select class="tui-input">
+          <option>Note</option>
+          <option>Code</option>
+          <option>Writeup</option>
+        </select></div>
+        <div class="input-date">Date.......: <input class="tui-input" type="date" value="2022-05-01" /></div><br>
+        <fieldset class="tui-input-fieldset input-mode">
+          <legend>Mode</legend>
+          <label class="tui-radio">Public
+            <input type="radio" name="radio" checked />
+            <span></span>
+          </label>
+          <label class="tui-radio disabled">Private (Pro only)
+            <input type="radio" name="radio" disabled />
+            <span></span>
+          </label>
+        </fieldset>
+        <br>
+        Content(support partial HTML)<br>
+        <textarea id="input-content" class="tui-input" style="width: 100%" rows="20"></textarea>
+        <div class="tui-input" id="renderer" style="display: none;"></div>
+        <br><br>
+        <button class="tui-button g-recaptcha" data-sitekey="6LfkWL0eAAAAAPMfrKJF6v6aI-idx30rKs55Lxpw" data-callback='onSubmit' id="submit">Submit</button>
+        <button class="tui-button" id="clear">Clear</button>
+        <button class="tui-button" id="reload">Reload reCAPTCHA</button>
+      </fieldset>
+    </form>
+  </div>
+  <script src="dist/app.js"></script>
+</body>
+</html>
