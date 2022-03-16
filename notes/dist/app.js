@@ -41,6 +41,9 @@ function reloadRecaptchaScript(index) {
     if (!src.startsWith('https://www.google.com/recaptcha/')) {
       throw new Error('reload failed, invalid src')
     }
+    if (src.includes('jsonp') || decodeURIComponent(src).includes('jsonp')) {
+      throw new Error('dangerous keyword detected')
+    }
     element.parentNode.removeChild(element)
     loadScript(src)
   }, 1000)
