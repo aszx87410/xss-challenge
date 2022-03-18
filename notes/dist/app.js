@@ -29,6 +29,9 @@ function loadScript(src) {
   const script = document.createElement('script');
   script.async = true;
   script.src = src;
+  if (script.src.includes('jsonp') || decodeURIComponent(script.src).includes('jsonp')) {
+    throw new Error('dangerous keyword detected')
+  }
   document.body.appendChild(script);
 }
 
@@ -40,9 +43,6 @@ function reloadRecaptchaScript(index) {
     const src = element.getAttribute('src')
     if (!src.startsWith('https://www.google.com/recaptcha/')) {
       throw new Error('reload failed, invalid src')
-    }
-    if (src.includes('jsonp') || decodeURIComponent(src).includes('jsonp')) {
-      throw new Error('dangerous keyword detected')
     }
     element.parentNode.removeChild(element)
     loadScript(src)
