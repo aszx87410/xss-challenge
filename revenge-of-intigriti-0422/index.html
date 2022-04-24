@@ -1,0 +1,317 @@
+<!--
+  diff:
+
+  - if (typeof data !== 'string') return data
+  + if (typeof data !== 'string') data = String(data)
+
+  - let protectedKeys = ['__proto__', "mode", "version", "location", "src", "data", "m"]
+  + let protectedKeys = ['__proto__', "mode", "version", "location", "src", "data", "m", "Object"]
+
+-->
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The revenge of Intigriti 0422 challenge">
+  <meta name="twitter:description" content="Delivered by @aszx87410">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; script-src 'self' 'unsafe-inline';">
+
+  <title>The revenge of Window Maker</title>
+  <!-- downloaded from https://unpkg.com/xp.css@0.3.0/dist/XP.css -->
+  <link rel="stylesheet" href="Window%20Maker_files/XP.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url("bg.jpg");
+      background-position: center;
+      background-repeat: no-repeat;
+      font-size: 18px;
+      min-height: 100vh;
+    }
+    main {
+      max-width: 750px;
+      margin: 100px auto;
+    }
+    .window-body {
+      margin: 16px;
+      font-size: 14px;
+    }
+    label {
+      font-size: 13px;
+    }
+
+    @media (min-height: 980px), (min-width: 1900px) {
+      body {
+        background-size: 100% 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+    <!-- downloaded from https://unpkg.com/mithril@2.0.4/mithril.js -->
+    <script src="Window%20Maker_files/mithril.js"></script>
+    <script>
+      (function(){
+        const App = {
+          view: function() {
+            return m("div", {class: "window"}, [
+              m(TitleBar),
+              m(WindowBody),
+              m(StatusBar)
+            ])
+          }
+        }
+
+        const TitleBar = {
+          view: function(vnode) {
+            const options = vnode.attrs.options || ['min', 'max', 'close']
+            const name = vnode.attrs.name || "The revenge of Window Maker"
+            return m("div", {class: "title-bar"}, [
+              m("div", {class: "title-bar-text"}, String(name)),
+              m("div", {class: "title-bar-controls"}, [
+                options.includes('min') && m("button", {'aria-label': 'Minimize'}),
+                options.includes('max') && m("button", {'aria-label': 'Maximize'}),
+                options.includes('close') && m("button", {'aria-label': 'Close'}),
+              ]),
+            ])
+          }
+        }
+
+        const WindowBody = {
+          view: function() {
+            return m("div", {class: "window-body"}, [
+              m("p", [
+                "In April, I hosted a challenge on Intigriti: ",
+                m("a", {href: "https://challenge-0422.intigriti.io/", target: '_blank'} ,"Intigriti's April XSS challenge"),
+                m("br"),
+                "But, the bug I mistakenly made made the challenge much easier, so I decided to host a revenge challenge on my own.",
+                m("br"),
+                m("br"),
+                m("b", "Rules"),m("br"),m("br"),
+                "The solution:",
+                m("ol", [
+                  m("li", "Should work on the latest version of Chrome and FireFox."),
+                  m("li" ,"Should leverage a cross site scripting vulnerability on this domain."),
+                  m("li", "Should execute alert(document.domain)."),
+                  m("li", "Should require no user interaction."),
+                  m("li", "Should not leverage other challenges on the same domain."),
+                  m("li", "Should be submitted before 2022-05-01T23:59:59+00:00."),
+                  m("li", [
+                    "Should be submitted in a private message to ",
+                    m("a", {href: "https://twitter.com/aszx87410", target: "_blank"},"@aszx87410")
+                  ]),
+                ]),
+
+                m("br"),
+                "Special thanks to ",
+                m("a", {href: "https://twitter.com/maple3142", target: "_blank"},"maple3142"), ", ",
+                m("a", {href: "https://twitter.com/PewGrand", target: "_blank"},"TheGrandPew"), ", and ",
+                m("a", {href: "https://twitter.com/BrunoModificato", target: "_blank"},"BrunoZero"), " for helping me test the challenge.",
+                m("br"), m("br"),
+                m("b", "Hall of Fame"),
+                m("ul", [
+                  m("li", "🥇 - ???"),
+                ]),
+                m("hr"),
+                m("br"),
+                "Window Maker is a website to help people build their own UI in 3 minutes!"
+              ]),
+              m("p", [
+                m(InputWindowName),
+                m(InputWindowContent),
+                m("br"),
+                m(InputToolbar),
+                m("br"),
+                m(InputStatusBar)
+              ]),
+              m("button", {onclick: function() {
+                const windowName = document.querySelector('#win-name').value
+                const windowContent = document.querySelector('#win-content').value
+                const toolbar = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(item => item.value)
+                const showStatus = document.querySelector('#radio-yes').checked
+                const config = {
+                  'window-name': windowName,
+                  'window-content': windowContent,
+                  'window-toolbar': toolbar,
+                  'window-statusbar': showStatus
+                }
+                const qs = m.buildQueryString({
+                  config
+                })
+                window.location.search = '?' + qs
+              }}, "generate")
+            ])
+          }
+        } 
+
+        const InputWindowName = {
+          view: function(vnode) {
+            return m("div", {class: "field-row-stacked"}, [
+              m("label", {for: 'win-name' }, 'Window name'),
+              m("input", {id: 'win-name', type: 'text' }),
+            ])
+          }
+        }
+
+        const InputWindowContent = {
+          view: function(vnode) {
+            return m("div", {class: "field-row-stacked"}, [
+              m("label", {for: 'win-content' }, 'Window content(plaintext only)'),
+              m("textarea", {id: 'win-content', rows: '8' }),
+            ])
+          }
+        }
+
+        const InputToolbar = {
+          view: function(vnode) {
+            return m("div", [
+              m("div", {class: "field-row"}, [
+                m("label", "Toolbar"),
+              ]),
+              m(Checkbox, { id: "toolbar-min", value: "min" }),
+              m(Checkbox, { id: "toolbar-max", value: "max" }),
+              m(Checkbox, { id: "toolbar-close", value: "close" }),
+            ])
+          }
+        }
+
+        const Checkbox = {
+          view: function(vnode) {
+            return m("div", {class: "field-row"}, [
+              m("input", {id: String(vnode.attrs.id), type: 'checkbox', value: String(vnode.attrs.value) }),
+              m("label", {for: String(vnode.attrs.id) }, String(vnode.attrs.value)),
+            ])
+          }
+        }
+
+        const InputStatusBar = {
+          view: function() {
+            return m("div", [
+              m("div", {class: "field-row"}, [
+                m("label", "Status bar"),
+              ]),
+              m(RadioButton, { id: "radio-yes", value: "Yes" }),
+              m(RadioButton, { id: "radio-no", value: "No" }),
+            ])
+          }
+        }
+
+        const RadioButton = {
+          view: function(vnode) {
+            return m("div", {class: "field-row"}, [
+              m("input", {id: String(vnode.attrs.id), type: 'radio', name: 'status-radio' }),
+              m("label", {for: String(vnode.attrs.id) }, String(vnode.attrs.value)),
+            ])
+          }
+        }
+
+        const StatusBar = {
+          view: function() {
+            return m("div", {class: "status-bar"}, [
+              m("p", {class: "status-bar-field"}, "Press F1 for help"),
+              m("p", {class: "status-bar-field"}, "Powered by XP.css and Mithril.js"),
+              m("p", {class: "status-bar-field"}, "CPU Usage: 32%"),
+            ])
+          }
+        }
+
+        const CustomizedApp = {
+          view: function(vnode) {
+            return m("div", {class: "window"}, [
+              m(TitleBar, {name: vnode.attrs.name, options: vnode.attrs.options}),
+              m("div", {class: "window-body"},[
+                String(vnode.attrs.content)
+              ]),
+               vnode.attrs.status && m(StatusBar)
+            ])
+          }
+        }
+
+        function main() {
+          const qs = m.parseQueryString(location.search)
+
+          let appConfig = Object.create(null)
+          appConfig["version"] = 1337
+          appConfig["mode"] = "production"
+          appConfig["window-name"] = "Window"
+          appConfig["window-content"] = "default content"
+          appConfig["window-toolbar"] = ["close"]
+          appConfig["window-statusbar"] = false
+          appConfig["customMode"] = false
+
+          if (qs.config) {
+            merge(appConfig, qs.config)
+            appConfig["customMode"] = true
+          }
+
+          let devSettings = Object.create(null)
+          devSettings["root"] = document.createElement('main')
+          devSettings["isDebug"] = false
+          devSettings["location"] = 'challenge-0422.intigriti.io'
+          devSettings["isTestHostOrPort"] = false
+
+          if (checkHost()) {
+            devSettings["isTestHostOrPort"] = true
+            merge(devSettings, qs.settings)
+          }
+
+          if (devSettings["isTestHostOrPort"] || devSettings["isDebug"]) {
+            console.log('appConfig', appConfig)
+            console.log('devSettings', devSettings)
+          }
+
+          if (!appConfig["customMode"]) {
+            m.mount(devSettings.root, App)
+          } else {
+            m.mount(devSettings.root, {view: function() {
+              return m(CustomizedApp, {
+                name: appConfig["window-name"],
+                content: appConfig["window-content"] ,
+                options: appConfig["window-toolbar"],
+                status: appConfig["window-statusbar"]
+              })
+            }})
+          }
+
+          document.body.appendChild(devSettings.root)
+        }
+
+        function checkHost() {
+          const temp = location.host.split(':')
+          const hostname = temp[0]
+          const port = Number(temp[1]) || 443
+          return hostname === 'localhost' || port === 8080
+        }
+
+        function isPrimitive(n) {
+          return n === null || n === undefined || typeof n === 'string' || typeof n === 'boolean' || typeof n === 'number'
+        }
+
+        function merge(target, source) {
+          let protectedKeys = ['__proto__', "mode", "version", "location", "src", "data", "m", "Object"]
+
+          for(let key in source) {
+            if (protectedKeys.includes(key)) continue
+
+            if (isPrimitive(target[key])) {
+              target[key] = sanitize(source[key])
+            } else {
+              merge(target[key], source[key])
+            }
+          }
+        }
+        function sanitize(data) {
+          if (typeof data !== 'string') data = String(data)
+          return data.replace(/[<>%&\$\s\\]/g, '_').replace(/script/gi, '_')
+        }
+
+        main()
+      })()
+    </script>
+
+</body></html>
